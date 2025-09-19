@@ -1,9 +1,15 @@
-const Display = () =>  {
+import { SceneDisplay } from "@/components/display/SceneDisplay";
+
+const DisplayScreen = () => {
     return (
-        <main className="w-[1920px] h-[1080px] m-0 p-0 overflow-hidden bg-black">
-            <h1>Here is the display page</h1>
+        <main
+            className='fixed top-0 left-0 flex items-center justify-center bg-black'
+            style={{ width: '1920px', height: '1080px' }}
+        >
+
+            <SceneDisplay bgImage="/defaultClassroom.jpg"/>
         </main>
-    )
+    );
 }
 
-export default Display;
+export default DisplayScreen;
