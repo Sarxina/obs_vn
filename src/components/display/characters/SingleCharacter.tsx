@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 
-interface SingleCharacterDisplayProps {
+export interface SingleCharacterDisplayProps {
     image: string
 };
 
