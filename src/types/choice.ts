@@ -1,4 +1,4 @@
-export type Choices = Choice[];
+export type ChoiceList = Choice[];
 
 export interface Choice {
     text: string
