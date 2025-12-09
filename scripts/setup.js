@@ -26,13 +26,9 @@ function needsBuild() {
   return !fs.existsSync(distDir);
 }
 
-// Install root dependencies if needed
-if (needsInstall(rootDir)) {
-  log('Installing root dependencies...');
-  run('npm install', rootDir);
-} else {
-  log('Root dependencies already installed ✓');
-}
+// Always install root dependencies to ensure everything is up to date
+log('Installing root dependencies...');
+run('npm install', rootDir);
 
 // Install frontend dependencies if needed
 if (needsInstall(frontendDir)) {
