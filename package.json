@@ -1,32 +1,19 @@
 {
-  "name": "obs_vn",
+  "name": "obs-vn",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@twurple/auth": "^7.4.0",
-    "@twurple/chat": "^7.4.0",
-    "dotenv": "^17.2.2",
-    "next": "15.5.3",
-    "obs-websocket-js": "^5.0.6",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "tmi.js": "^1.8.5"
+    "predev": "node scripts/setup.js",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd src/frontend && npm run dev",
+    "dev:backend": "cd src/backend && npm run dev",
+    "build:frontend": "cd src/frontend && npm run build",
+    "start": "cd src/backend && npm start"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.3",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "concurrently": "^9.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }

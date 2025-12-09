@@ -1,12 +1,12 @@
 'use client'
-import { CharacterDisplay, PositionedCharacter } from "@/components/display/characters/CharacterDisplay";
-import { SingleCharacterDisplayProps } from "@/components/display/characters/SingleCharacter";
-import { ChoiceDisplay } from "@/components/display/choice/ChoiceDisplay";
-import { DialogueDisplay } from "@/components/display/dialogue/DialogueDisplay";
-import { SceneDisplay } from "@/components/display/SceneDisplay";
-import { Character, CharacterList } from "@/types/character";
-import { ChoiceList } from "@/types/choice";
-import { defaultDisplayState } from "@/types/display-state";
+import { CharacterDisplay, PositionedCharacter } from "../../components/display/characters/CharacterDisplay";
+import { SingleCharacterDisplayProps } from "../../components/display/characters/SingleCharacter";
+import { ChoiceDisplay } from "../../components/display/choice/ChoiceDisplay";
+import { DialogueDisplay } from "../../components/display/dialogue/DialogueDisplay";
+import { SceneDisplay } from "../../components/display/SceneDisplay";
+import { Character, CharacterList } from "../../types/character";
+import { ChoiceList } from "../../types/choice";
+import { defaultDisplayState } from "../../types/display-state";
 import { useEffect, useState } from "react";
 
 const DisplayScreen = () => {

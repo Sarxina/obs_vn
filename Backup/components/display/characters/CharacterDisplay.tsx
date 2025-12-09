@@ -1,6 +1,6 @@
 'use client'
 
-import { CharacterList } from "@/types/character"
+import { CharacterList } from "../../../types/character"
 import { SingleCharacterDisplay, SingleCharacterDisplayProps } from "./SingleCharacter"
 
 interface CharacterDisplayProps {
