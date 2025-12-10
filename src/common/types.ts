@@ -2,7 +2,7 @@ import { ChatGodProps } from "../backend/src/chatgod-js/src/common/types";
 
 export type VNMode = 'choice' | 'text';
 
-interface ChoiceData {
+export interface ChoiceData {
     text: string;
     voteString: string;
     numVotes: number;
