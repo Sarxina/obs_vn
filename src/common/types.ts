@@ -19,10 +19,36 @@ export interface LocationData {
 }
 
 export interface VNStateData {
-    currentLocation: LocationData;
+    currentLocation: number;
     locationOptions: LocationData[];
     characters: CharacterData[];
     currentText: string;
     currentChoices: ChoiceData[];
     currentMode: VNMode;
+}
+
+const VN_SUBJECTS = {
+    currentLocation: ['set-current-location'],
+    locationOptions: ['add-location', 'remove-location', 'update-location'],
+    characters: ['add-character', 'update-character', 'delete-character'],
+    currentText: ['set-current-text'],
+    currentChoices: ['add-choice', 'update-choice', 'delete-choice'],
+    currentMode: ['set-mode'],
+} as const;
+
+export type VNStateField = keyof typeof VN_SUBJECTS;
+export type VNSubject<F extends VNStateField> = typeof VN_SUBJECTS[F][number];
+
+const defaultLocation: LocationData = {
+    image: '/defaultClassroom.jpg',
+    name: 'Classroom'
+}
+
+export const defaultVNState: VNStateData = {
+    currentLocation: 0,
+    locationOptions: [defaultLocation],
+    characters: [],
+    currentText: 'The adventure begins',
+    currentChoices: [],
+    currentMode: 'text'
 }

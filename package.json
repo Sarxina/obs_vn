@@ -7,7 +7,9 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd src/frontend && npm run dev",
     "dev:backend": "cd src/backend && npm run dev",
-    "build:frontend": "cd src/frontend && npm run build",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd src/frontend && npm run build && mkdir -p dist/frontend && cp -r src/frontend/dist/* dist/frontend/",
+    "build:backend": "cd src/backend && npm run build",
     "start": "cd src/backend && npm start"
   },
   "devDependencies": {

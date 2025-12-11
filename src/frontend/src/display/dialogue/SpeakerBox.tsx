@@ -1,6 +1,6 @@
 'use client';
 
-export function SpeakerBox() {
+export function SpeakerBox({speaker}: {speaker: string}) {
   return (
     <div
       className="
@@ -17,7 +17,7 @@ export function SpeakerBox() {
         rounded-sm
       "
     >
-      Sarxina
+      {speaker}
     </div>
   );
 }

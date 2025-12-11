@@ -19,7 +19,15 @@ function run(command, cwd) {
 }
 
 function needsInstall(dir) {
-  return !fs.existsSync(path.join(dir, 'node_modules'));
+  const binPath = path.join(dir, 'node_modules', '.bin');
+  // If .bin doesn't exist or is empty, need to install
+  if (!fs.existsSync(binPath)) return true;
+  try {
+    const binContents = fs.readdirSync(binPath);
+    return binContents.length === 0;
+  } catch (e) {
+    return true;
+  }
 }
 
 function needsBuild() {
@@ -30,28 +38,18 @@ function needsBuild() {
 log('Installing root dependencies...');
 run('npm install', rootDir);
 
-// Install frontend dependencies if needed
-if (needsInstall(frontendDir)) {
-  log('Installing frontend dependencies...');
-  run('npm install', frontendDir);
-} else {
-  log('Frontend dependencies already installed ✓');
-}
+// Always install frontend dependencies (npm is smart about skipping if nothing changed)
+log('Installing frontend dependencies...');
+run('npm install', frontendDir);
 
-// Install backend dependencies if needed
-if (needsInstall(backendDir)) {
-  log('Installing backend dependencies...');
-  run('npm install', backendDir);
-} else {
-  log('Backend dependencies already installed ✓');
-}
+// Always install backend dependencies
+log('Installing backend dependencies...');
+run('npm install', backendDir);
 
 // Install chatgod-js dependencies if needed
-if (fs.existsSync(chatgodDir) && needsInstall(chatgodDir)) {
+if (fs.existsSync(chatgodDir)) {
   log('Installing chatgod-js dependencies...');
   run('npm install', chatgodDir);
-} else if (fs.existsSync(chatgodDir)) {
-  log('Chatgod-js dependencies already installed ✓');
 }
 
 // Build frontend if needed

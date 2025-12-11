@@ -1,10 +1,11 @@
 'use client'
 
+import { CharacterData } from "../../../../../common/types"
 import { CharacterList } from "../../../types/character"
 import { SingleCharacterDisplay, SingleCharacterDisplayProps } from "./SingleCharacter"
 
 interface CharacterDisplayProps {
-    characters: CharacterList
+    characters: CharacterData[]
 }
 export const CharacterDisplay = ({characters}: CharacterDisplayProps) => {
     return (

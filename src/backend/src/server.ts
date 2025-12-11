@@ -6,38 +6,27 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 import express from 'express'
 import http from "http";
-import cors from 'cors'
-import { ChatGodManager } from './chatgod-js/src/services/ChatGodManager'
+import cors from 'cors';
+import { VNManager } from './VNManager';
 
 const app = express()
 const server = http.createServer(app);
-const PORT = process.env.PORT || 5001
+server.setMaxListeners(0);
 
-// Middleware
-app.use(cors())
-app.use(express.json())
+console.log('Starting Server')
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' })
+
+// Serve the built frontend
+app.use(express.static(path.join(__dirname, '../../../dist/frontend')))
+app.get('*', (req, res) => {
+  res.sendFile('index.html', { root: path.join(__dirname, '../../../dist/frontend') })
 })
-
-// Example API route
-app.get('/api/example', (req, res) => {
-  res.json({ message: 'This is an example API endpoint' })
-})
-
-// Serve the built frontend in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('../../dist/frontend'))
-  app.get('*', (req, res) => {
-    res.sendFile('index.html', { root: '../../dist/frontend' })
-  })
-}
 
 // Backend process start
-const VNManager = new VNMana
+const BACKEND_PORT = Number(process.env.BACKEND_PORT) || 5001;
+const vnManager = new VNManager(server)
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+server.listen(BACKEND_PORT, () => {
+    console.log(`✅ Backend running at http://localhost:${BACKEND_PORT}`);
+    console.log(`\n📺 Visit:\n   Display: http://localhost:3000/display\n   Control: http://localhost:3000/controls\n`);
+});

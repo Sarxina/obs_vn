@@ -1,6 +1,8 @@
 'use client';
 
-export function DialogueBox() {
+import { TypeAnimation } from "react-type-animation";
+
+export function DialogueBox({text} : {text: string}) {
   return (
     <div
       className="
@@ -19,9 +21,14 @@ export function DialogueBox() {
         justify-center
       "
     >
-      <p className="text-center leading-relaxed">
-        Sample dialogue streamed from chat
-      </p>
+      <div className="text-center leading-relaxed">
+        <TypeAnimation
+          sequence={[text]}
+          speed={50}
+          wrapper="p"
+          repeat={0}
+        />
+      </div>
     </div>
   );
 }
