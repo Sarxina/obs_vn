@@ -10,9 +10,13 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@coreui/coreui": "^5.4.3",
+    "@coreui/icons": "^3.0.1",
+    "framer-motion": "^12.23.26",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
+    "react-simple-typewriter": "^5.0.1",
     "react-type-animation": "^3.2.0",
     "socket.io-client": "^4.8.1"
   },

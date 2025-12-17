@@ -9,7 +9,7 @@ export function SceneDisplay({ bgImage }: SceneDisplayProps) {
   return (
     <div
       className="absolute inset-0 bg-cover bg-center"
-      style={{ backgroundImage: `url(${bgImage})` }}
+      style={{ backgroundImage: `url(locations/${bgImage})` }}
     />
   );
 }

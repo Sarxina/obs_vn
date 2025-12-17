@@ -20,17 +20,17 @@ function updateVNState(_target: any, _propertyKey: any, descriptor: PropertyDesc
 
 class Choice {
     private text: string;
-    private voteString: string;
+    private keyWord: string;
     private numVotes: number;
     onStateChange: () => void;
 
     constructor (
         text: string,
-        voteString: string,
+        keyWord: string,
         onStateChange: () => void
     ) {
         this.text = text;
-        this.voteString = voteString;
+        this.keyWord = keyWord;
         this.numVotes = 0;
         this.onStateChange = onStateChange;
     }
@@ -38,7 +38,7 @@ class Choice {
     serialize = (): ChoiceData => {
         return {
             text: this.text,
-            voteString: this.voteString,
+            keyWord: this.keyWord,
             numVotes: this.numVotes
         }
     }
@@ -52,8 +52,8 @@ class Choice {
         this.numVotes += 1;
     }
 
-    getVoteString = () => {
-        return this.voteString;
+    getkeyWord = () => {
+        return this.keyWord;
     }
 }
 
@@ -66,6 +66,14 @@ class Character extends ChatGod {
         super(keyWord, onStateChange)
         this.name = 'Sarxina';
         this.inScene = false;
+    }
+
+    getName = () => {
+        return this.name;
+    }
+
+    getInScene = () => {
+        return this.inScene;
     }
 
     serialize = (): CharacterData => {
@@ -82,6 +90,7 @@ class Character extends ChatGod {
         this.image = newData.image;
         this.name = newData.name;
         this.keyWord = newData.keyWord;
+        this.inScene = newData.inScene;
 
         this.setLatestMessage(newData.latestMessage);
         this.toggleSpeakingState(newData.isSpeaking);
@@ -93,28 +102,53 @@ class Character extends ChatGod {
 
 // Manages the characters and their state updates
 // Uses the chatgod-ks package
-class CharacterManager extends ChatGodManager {
+class CharacterManager extends ChatGodManager<Character> {
     static ChatGodClass = Character;
     managerContext: VNManager // The manager
 
-    emitChatGods = () => {
+    emitChatGods() {
         this.managerContext.emitVNState();
     }
+
+    protected createChatGod(keyword: string): Character {
+        return new Character(keyword, this.managerContext.emitVNState.bind(this.managerContext));
+    }
     serializeChatGods = (): CharacterData[] => {
-        return (this.chatGods as Character[]).map(g => g.serialize());
+        return this.chatGods.map(g => g.serialize());
     }
 
-    constructor (server: http.Server, managerContext: VNManager) {
+
+    createInitialGods() {
+        this.managerContext = this.managerContext;
+        this.wsManager = this.managerContext.wsManager;
+        this.chatGods = [
+            this.createChatGod(this.getKeyword(1)),
+            this.createChatGod(this.getKeyword(2)),
+            this.createChatGod(this.getKeyword(3))
+        ]
+    }
+
+    constructor (
+        server: http.Server,
+        managerContext: VNManager
+    ) {
         // Pass null so ChatGodManager doesn't create a WSManager
         // We should definately reorganize, this is a little silly.
-        super(null);
-
-        this.managerContext = managerContext;
-        this.wsManager = managerContext.wsManager;
+        super(null, managerContext);
         const bindings = (this as any).__proto__.__frontendBindings;
         this.registerAllFrontendListeners(bindings);
     }
 
+    // Override speaking to set the VN's current speaker
+    // as well as only allow active characters to speak
+    speakMessage(chatGod: Character, message: string): void {
+        // Speak only if the god is in the scene
+        if (chatGod.getInScene()) {
+            this.managerContext.state.setCurrentSpeaker(chatGod.getName());
+            this.managerContext.state.setCurrentText(message);
+            super.speakMessage(chatGod, message);
+        }
+    }
     // After processing chat gods messagines
     // Check to see if message qualifies as a choice vote
     processMessage = (message: string, chatter: string) => {
@@ -126,19 +160,28 @@ class CharacterManager extends ChatGodManager {
 class Location {
     private name: string;
     private image: string;
+    keyWord: string;
 
     constructor (
         name: string = 'classroom',
-        image: string = 'defaultClassroom.jpg'
+        image: string = 'defaultClassroom.jpg',
+        keyword: string = `!location${Math.floor(Math.random() * 100)}`
     ) {
         this.name = name;
         this.image = image;
+        this.keyWord = keyword;
+    }
+
+    update = (data: LocationData) => {
+        this.name = data.name;
+        this.image = data.image;
     }
 
     serialize = (): LocationData => {
         return {
             name: this.name,
-            image: this.image
+            image: this.image,
+            keyWord: this.keyWord
         }
     }
 }
@@ -151,6 +194,7 @@ class VNState {
     private currentText: string;
     private currentChoices: Choice[];
     private currentMode: VNMode;
+    private currentSpeaker: string;
 
     managerContext: VNManager;
     onStateChange: () => void;
@@ -163,12 +207,14 @@ class VNState {
         this.locationOptions = [new Location()];
         this.currentLocation = 0;
         this.characters = new CharacterManager(server, managerContext);
+        this.currentSpeaker = this.characters.chatGods[0].getName();
         this.currentText = 'The story begins...'
         this.currentChoices = [
             new Choice('First Choice', '!choice1', onStateChange),
             new Choice('Second Choice', '!choice2', onStateChange)
         ]
         this.currentMode = 'text';
+
 
         this.managerContext = managerContext;
         this.onStateChange = onStateChange;
@@ -182,7 +228,8 @@ class VNState {
             characters: this.characters.serializeChatGods(),
             currentText: this.currentText,
             currentChoices: this.currentChoices.map((choice) => choice.serialize()),
-            currentMode: this.currentMode
+            currentMode: this.currentMode,
+            currentSpeaker: this.currentSpeaker
         }
     }
 
@@ -202,11 +249,11 @@ class VNState {
     }
 
     @updateVNState
-    updateLocation(idx: number, name: string, image: string) {
-        if (idx >= this.locationOptions.length) {
-            throw new Error('Tried to update non-existant location')
+    updateLocation(newData: LocationData) {
+        const locToChange = this.locationOptions.find(loc => loc.keyWord === newData.keyWord);
+        if (locToChange) {
+            locToChange.update(newData);
         }
-        this.locationOptions[idx] = new Location(name, image)
     }
 
     @updateVNState
@@ -235,9 +282,12 @@ class VNState {
     }
 
     /** Text CRUD */
-    @updateVNState
     setCurrentText(text: string) {
         this.currentText = text;
+    }
+
+    setCurrentSpeaker(speaker: string) {
+        this.currentSpeaker = speaker;
     }
 
     /** Choice CRUD */
@@ -253,6 +303,10 @@ class VNState {
 
     getAllChoices() {
         return this.currentChoices;
+    }
+
+    getAllLocations() {
+        return this.locationOptions;
     }
 
     @updateVNState
@@ -278,12 +332,16 @@ class VNState {
 
 // Manages the game
 export class VNManager {
-    private state: VNState;
+    state: VNState;
     wsManager: WSManagerVN;
 
-    emitVNState = () => {
+    emitVNState () {
         this.wsManager.emitVNState(this.state.serialize());
     };
+
+    getLocationByKeyword = (keyWord: string) => {
+        return this.state.getAllLocations().find(loc => loc.keyWord);
+    }
 
     /** Websocket hooks */
     @updateFromFrontend('get-vnstate')
@@ -304,11 +362,7 @@ export class VNManager {
 
     @updateFromFrontend('update-location')
     updateLocation = (data: any) => {
-        this.state.updateLocation(
-            data.idx,
-            data.name,
-            data.image
-        )
+        this.state.updateLocation(data);
     };
 
     @updateFromFrontend('set-current-location')
@@ -347,9 +401,9 @@ export class VNManager {
 
     // Checks to see if inputted keyword is a choice vote text or not
     // If so, vote for that choice
-    voteForChoice = (voteString: string) => {
+    voteForChoice = (keyWord: string) => {
         const choices = this.state.getAllChoices()
-        const thisChoice = choices.find(choice => choice.getVoteString() === voteString)
+        const thisChoice = choices.find(choice => choice.getkeyWord() === keyWord)
 
         if (thisChoice) {
             thisChoice.voteForChoice();
@@ -377,7 +431,7 @@ export class VNManager {
 
         this.wsManager = new WSManagerVN(server);
         // Create the state class with the server, this context, and the update callback
-        this.state = new VNState(server, this, this.emitVNState);
+        this.state = new VNState(server, this, this.emitVNState.bind(this));
 
         const bindings = (this as any).__proto__.__frontendBindings;
         this.registerAllFrontendListeners(bindings);

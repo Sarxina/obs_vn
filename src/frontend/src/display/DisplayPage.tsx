@@ -8,13 +8,19 @@ import { VNStateData } from "../../../common/types";
 import { UpdateVNStateFun } from "../clientState";
 import { CharacterDisplay } from "./characters/CharacterDisplay";
 
-const DisplayPage = ({vnState, onUpdate}: {vnState: VNStateData, onUpdate: UpdateVNStateFun}) => {
+interface DisplayPageProps {
+    vnState: VNStateData
+}
+
+const DisplayPage = ({vnState}: DisplayPageProps) => {
 
     const currentLocation = vnState.locationOptions[vnState.currentLocation];
     const characters = vnState.characters;
     const currentText = vnState.currentText;
     const currentChoices = vnState.currentChoices;
     const currentMode = vnState.currentMode;
+    const currentSpeaker = vnState.currentSpeaker;
+
     return (
         <main
             className="relative w-[1920px] h-[1080px] overflow-hidden"
@@ -30,7 +36,7 @@ const DisplayPage = ({vnState, onUpdate}: {vnState: VNStateData, onUpdate: Updat
             )}
 
             {currentMode === 'text' && (
-                <DialogueDisplay text={currentText} speaker="Sarxina"/>
+                <DialogueDisplay text={currentText} speaker={currentSpeaker}/>
             )}
         </main>
     );

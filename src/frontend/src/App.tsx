@@ -7,9 +7,9 @@ function App() {
   const [vnState, updateVNState] = useVNState();
   return (
     <Routes>
-      <Route path="/controls" element={<ControlsPage />} />
+      <Route path="/controls" element={<ControlsPage vnState={vnState} onUpdate={updateVNState}/>} />
       <Route path="/display" element={<DisplayPage vnState={vnState} onUpdate={updateVNState}/>} />
-      <Route path="/" element={<ControlsPage />} />
+      <Route path="/" element={<ControlsPage vnState={vnState} onUpdate={updateVNState}/>} />
     </Routes>
   )
 }

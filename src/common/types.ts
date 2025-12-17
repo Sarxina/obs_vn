@@ -1,10 +1,12 @@
 import { ChatGodProps } from "../backend/src/chatgod-js/src/common/types";
 
 export type VNMode = 'choice' | 'text';
+export type GamePieces = 'characters' | 'locationOptions' | 'currentChoices'
+export type GamePiece = 'character' | 'location' | 'choice'
 
 export interface ChoiceData {
     text: string;
-    voteString: string;
+    keyWord: string;
     numVotes: number;
 }
 
@@ -16,12 +18,14 @@ export interface CharacterData extends ChatGodProps {
 export interface LocationData {
     name: string;
     image: string;
+    keyWord: string;
 }
 
 export interface VNStateData {
     currentLocation: number;
     locationOptions: LocationData[];
     characters: CharacterData[];
+    currentSpeaker: string
     currentText: string;
     currentChoices: ChoiceData[];
     currentMode: VNMode;
@@ -41,7 +45,8 @@ export type VNSubject<F extends VNStateField> = typeof VN_SUBJECTS[F][number];
 
 const defaultLocation: LocationData = {
     image: '/defaultClassroom.jpg',
-    name: 'Classroom'
+    name: 'Classroom',
+    keyWord: '!loc1'
 }
 
 export const defaultVNState: VNStateData = {
@@ -50,5 +55,6 @@ export const defaultVNState: VNStateData = {
     characters: [],
     currentText: 'The adventure begins',
     currentChoices: [],
-    currentMode: 'text'
+    currentMode: 'text',
+    currentSpeaker: 'Sarxina'
 }

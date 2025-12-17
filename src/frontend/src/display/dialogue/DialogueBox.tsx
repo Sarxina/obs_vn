@@ -1,8 +1,12 @@
 'use client';
 
-import { TypeAnimation } from "react-type-animation";
+import { Typewriter } from "react-simple-typewriter";
 
-export function DialogueBox({text} : {text: string}) {
+interface DialogueBoxProps {
+  text: string
+};
+
+export function DialogueBox({text} : DialogueBoxProps) {
   return (
     <div
       className="
@@ -22,11 +26,10 @@ export function DialogueBox({text} : {text: string}) {
       "
     >
       <div className="text-center leading-relaxed">
-        <TypeAnimation
-          sequence={[text]}
-          speed={50}
-          wrapper="p"
-          repeat={0}
+        <Typewriter
+          key={text}
+          words={[text]}
+          typeSpeed={40}
         />
       </div>
     </div>

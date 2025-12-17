@@ -1,16 +1,14 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { defaultVNState, VNStateData, VNStateField, VNSubject } from "../../common/types"
+import { CharacterData, ChoiceData, defaultVNState, GamePiece, GamePieces, LocationData, VNStateData, VNStateField, VNSubject } from "../../common/types"
 import { Socket, io } from "socket.io-client"
 
-export type UpdateVNStateFun = <F extends VNStateField>(
-    field: F,
-    subject: VNSubject<F>,
-    data: any
-) => void
+export interface UpdateVNStateFuns {
+    updateGamePiece: (...args: any[]) => void
+}
 
-export const useVNState = (): [VNStateData, UpdateVNStateFun] => {
+export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
     const [vnState, setVNState] = useState<VNStateData>(defaultVNState);
     const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -42,15 +40,28 @@ export const useVNState = (): [VNStateData, UpdateVNStateFun] => {
         }
     }, [socket]);
 
-    const updateVNState = <F extends VNStateField>(
-        field: F,
-        subject: VNSubject<F>,
-        data: any
-    ) => {
-        if (!socket) return;
+    // Function for updating any of the Characters, Locations, or Choices
+    const updateGamePiece = (
+        newPiece: CharacterData | LocationData | ChoiceData,
+        pieceType: GamePiece,
+        pieceArray: GamePieces
 
-        // Route to the proper update procedures
-        socket.emit(subject, data)
+    ) => {
+        const newPieces = vnState[pieceArray].map(currentPiece =>
+            currentPiece.keyWord === newPiece.keyWord
+            ? newPiece
+            : currentPiece
+        )
+        setVNState({
+            ...vnState,
+            [pieceArray]: newPieces
+        })
+        socket?.emit(`update-${pieceType}`, newPiece);
+    }
+
+    // Final object containing all the callbacks to update the VN state
+    const updateVNState = {
+        updateGamePiece: updateGamePiece
     }
 
     return [vnState, updateVNState];
