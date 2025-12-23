@@ -1,20 +1,32 @@
 'use client'
 
+import { ChoiceData } from "../../../../common/types";
 import { ChoiceBox } from "./ChoiceBox"
 
-export const ChoiceDisplay = () => {
+interface ChoiceDisplayProps {
+    choices: ChoiceData[]
+}
+
+export const ChoiceDisplay = ({ choices }: ChoiceDisplayProps) => {
     return (
         <div
             className="
                 flex flex-col
-                gap-6
+                justify-evenly
+                min-h-screen
                 px-24
                 w-full
             "
         >
-            <ChoiceBox />
-            <ChoiceBox />
-            <ChoiceBox />
+            {choices.map((c) => (
+                <ChoiceBox
+                    key={c.keyWord}
+                    numVotes={c.numVotes}
+                    keyWord={c.keyWord}
+                    text={c.text}
+                />
+            ))}
         </div>
     );
 };
+

@@ -12,7 +12,7 @@ interface DisplayPageProps {
     vnState: VNStateData
 }
 
-const DisplayPage = ({vnState}: DisplayPageProps) => {
+const BehindModel = ({vnState}: DisplayPageProps) => {
 
     const currentLocation = vnState.locationOptions[vnState.currentLocation];
     const characters = vnState.characters;
@@ -28,18 +28,8 @@ const DisplayPage = ({vnState}: DisplayPageProps) => {
         >
             <SceneDisplay bgImage={currentLocation.image}/>
             <CharacterDisplay characters={characters}/>
-
-            {currentMode === 'choice' && (
-                <div className="absolute inset-0">
-                    <ChoiceDisplay choices={currentChoices}/>
-                </div>
-            )}
-
-            {currentMode === 'text' && (
-                <DialogueDisplay text={currentText} speaker={currentSpeaker}/>
-            )}
         </main>
     );
 }
 
-export default DisplayPage;
+export default BehindModel;

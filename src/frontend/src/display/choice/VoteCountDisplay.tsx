@@ -1,6 +1,11 @@
 'use client'
 
-export const VoteCountDisplay = () => {
+interface VoteCountDisplayProps {
+    numVotes: number
+    keyWord: string
+}
+
+export const VoteCountDisplay = ({numVotes, keyWord}: VoteCountDisplayProps) => {
     return (
         <div
             className="
@@ -16,13 +21,13 @@ export const VoteCountDisplay = () => {
                 w-20
             "
         >
-            /** top row: icon + count */
+            {/* top row: icon + count */}
             <div className="flex items-center gap-1 mb-1">
                 <span className="text-pink-500 text-lg">👤</span>
-                <span className="font-bold text-base">12</span>
+                <span className="font-bold text-base">{numVotes}</span>
             </div>
-            /** bottom row: vote command */
-            <div className="text-xs text-gray-700">!choose 1</div>
+            {/* bottom row: vote command */}
+            <div className="text-xs text-gray-700">Vote: {keyWord}</div>
 
         </div>
     )

@@ -1,30 +1,31 @@
 'use client'
 
+import { ChoiceData } from "../../../../common/types";
 import { VoteCountDisplay } from "./VoteCountDisplay";
 
-export const ChoiceBox = () => {
+
+export const ChoiceBox = ({ text, keyWord, numVotes }: ChoiceData) => {
     return (
         <div
             className="
-                flex
-                justify-between
-                items-center
-                bg-white/80
-                backdrop-blur-md
-                border-2 border-pink-300
-                rounded-xl
-                shadow-lg
-                px-6
-                py-4
-                text-gray-900
-                font-semibold
-                text-xl
-                max-w-[70%]
-                mx-auto
+                relative
+                flex items-center
+                bg-white/80 backdrop-blur-md
+                border-2 border-pink-300 rounded-xl shadow-lg
+                px-6 py-4 text-gray-900 font-semibold text-xl
+                w-full max-w-3xl mx-auto
             "
         >
-            <span>this is a sample choice.</span>
-            <VoteCountDisplay />
+            {/* Centered text */}
+            <span className="absolute left-1/2 -translate-x-1/2 text-center">
+                {text}
+            </span>
+
+            {/* Right-aligned vote box */}
+            <div className="ml-auto">
+                <VoteCountDisplay keyWord={keyWord} numVotes={numVotes} />
+            </div>
         </div>
     );
-}
+};
+

@@ -8,7 +8,6 @@ export interface SingleCharacterDisplayProps {
 };
 
 export function SingleCharacterDisplay({ image, name, isSpeaking }: SingleCharacterDisplayProps) {
-  console.log(isSpeaking)
   return (
     <div className='h-full flex items-end'>
       <motion.img

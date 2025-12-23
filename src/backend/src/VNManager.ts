@@ -151,7 +151,8 @@ class CharacterManager extends ChatGodManager<Character> {
     }
     // After processing chat gods messagines
     // Check to see if message qualifies as a choice vote
-    processMessage = (message: string, chatter: string) => {
+    processMessage (message: string, chatter: string) {
+        this.managerContext.voteByKeyword(message);
         super.processMessage(message, chatter);
     }
 }
@@ -310,11 +311,9 @@ class VNState {
     }
 
     @updateVNState
-    updateChoice(idx: number, text: string) {
-        if (idx >= this.currentChoices.length) {
-            throw new Error('Cannot update non-existant choice');
-        }
-        this.currentChoices[idx].setText(text);
+    updateChoice(choice: ChoiceData) {
+        const choiceToChange = this.getAllChoices().findIndex((c) => c.getkeyWord() === choice.keyWord)
+        this.currentChoices[choiceToChange].setText(choice.text);
     }
 
     @updateVNState
@@ -411,8 +410,8 @@ export class VNManager {
     }
 
     @updateFromFrontend('update-choice')
-    updateChoice = (data: any) => {
-        this.state.updateChoice(data.idx, data.text);
+    updateChoice = (data: ChoiceData) => {
+        this.state.updateChoice(data);
     };
 
     @updateFromFrontend('delete-choice')
@@ -424,6 +423,17 @@ export class VNManager {
     @updateFromFrontend('set-mode')
     setMode = (data: any) => {
         this.state.setMode(data.mode);
+    }
+
+    // Given a keyword, vote for the corresponding
+    // choice if its an option
+    voteByKeyword = (keyword: string) => {
+        const choices = this.state.getAllChoices();
+        const choiceToVote = choices.find((c) => c.getkeyWord() === keyword);
+        if (choiceToVote) {
+            console.log(`Detected a choice vote`)
+            choiceToVote.voteForChoice();
+        }
     }
 
     constructor(server: http.Server) {

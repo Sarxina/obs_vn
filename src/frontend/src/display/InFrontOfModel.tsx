@@ -12,7 +12,7 @@ interface DisplayPageProps {
     vnState: VNStateData
 }
 
-const DisplayPage = ({vnState}: DisplayPageProps) => {
+const InFrontOfModel = ({vnState}: DisplayPageProps) => {
 
     const currentLocation = vnState.locationOptions[vnState.currentLocation];
     const characters = vnState.characters;
@@ -26,9 +26,6 @@ const DisplayPage = ({vnState}: DisplayPageProps) => {
             className="relative w-[1920px] h-[1080px] overflow-hidden"
             style={{ width: '1920px', height: '1080px' }}
         >
-            <SceneDisplay bgImage={currentLocation.image}/>
-            <CharacterDisplay characters={characters}/>
-
             {currentMode === 'choice' && (
                 <div className="absolute inset-0">
                     <ChoiceDisplay choices={currentChoices}/>
@@ -42,4 +39,4 @@ const DisplayPage = ({vnState}: DisplayPageProps) => {
     );
 }
 
-export default DisplayPage;
+export default InFrontOfModel;

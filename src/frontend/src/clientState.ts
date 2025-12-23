@@ -6,6 +6,7 @@ import { Socket, io } from "socket.io-client"
 
 export interface UpdateVNStateFuns {
     updateGamePiece: (...args: any[]) => void
+    setMode: (newMode: 'text' | 'choice') => void
 }
 
 export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
@@ -59,9 +60,21 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         socket?.emit(`update-${pieceType}`, newPiece);
     }
 
+    const setMode = (
+        newMode: 'text' | 'choice'
+    ) => {
+        console.log(`We are setting mode to ${newMode}`)
+        setVNState({
+            ...vnState,
+            currentMode: newMode
+        });
+        socket?.emit('set-mode', {mode: newMode});
+    }
+
     // Final object containing all the callbacks to update the VN state
     const updateVNState = {
-        updateGamePiece: updateGamePiece
+        updateGamePiece: updateGamePiece,
+        setMode: setMode
     }
 
     return [vnState, updateVNState];
