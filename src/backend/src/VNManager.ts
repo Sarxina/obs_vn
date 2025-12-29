@@ -1,4 +1,4 @@
-import { ChatGod, ChatGodManager, updateFromFrontend } from "./chatgod-js/src/services/ChatGodManager"
+import { ChatGod, ChatGodManager, updateFromFrontend, updateGodState } from "./chatgod-js/src/services/ChatGodManager"
 import { WSManager } from "./chatgod-js/src/services/WSManager";
 import http from "http";
 import { WSManagerVN } from "./WSManagerVN";
@@ -327,6 +327,32 @@ class VNState {
         this.currentMode = mode;
     }
 
+    // Directly set all of the locations
+    _setLocations(locations: LocationData[]) {
+        const newLocations: Location[] = [];
+        for (const location of locations) {
+            const newLocation = new Location(
+                location.name,
+                location.image,
+                location.keyWord
+            )
+            newLocations.push(newLocation);
+        }
+        this.locationOptions = newLocations;
+    }
+
+    // Directly set the entire state
+    @updateGodState
+    setState(state: VNStateData) {
+        // Location
+
+        // Characters
+
+        // Choices
+
+        // Mode
+    }
+
 }
 
 // Manages the game
@@ -425,6 +451,12 @@ export class VNManager {
         this.state.setMode(data.mode);
     }
 
+    @updateFromFrontend('load-state')
+    loadState = (data: VNStateData) => {
+        // placeholder
+        this.state.setState(data);
+    }
+
     // Given a keyword, vote for the corresponding
     // choice if its an option
     voteByKeyword = (keyword: string) => {
@@ -435,6 +467,7 @@ export class VNManager {
             choiceToVote.voteForChoice();
         }
     }
+
 
     constructor(server: http.Server) {
         console.log("Attempting to start the VNManager");

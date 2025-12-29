@@ -22,7 +22,7 @@ export interface LocationData {
 }
 
 export interface VNStateData {
-    currentLocation: string;
+    currentLocation: number;
     locationOptions: LocationData[];
     characters: CharacterData[];
     currentSpeaker: string
