@@ -128,6 +128,11 @@ class CharacterManager extends ChatGodManager<Character> {
         ]
     }
 
+    // Override to frontend listener registration to register to VNManager instead
+    _registerFrontendListener(wsSubject: string, methodName: string) {
+        this.managerContext.wsManager.registerFrontendListener(wsSubject, (this as any)[methodName].bind(this));
+    }
+
     constructor (
         server: http.Server,
         managerContext: VNManager
