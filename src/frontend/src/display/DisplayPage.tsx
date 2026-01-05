@@ -1,11 +1,9 @@
 'use client'
-import { useEffect, useState } from "react";
-import { defaultDisplayState } from "../types/display-state";
+
 import { ChoiceDisplay } from "./choice/ChoiceDisplay";
 import { SceneDisplay } from "./SceneDisplay";
 import { DialogueDisplay } from "./dialogue/DialogueDisplay";
 import { VNStateData } from "../../../common/types";
-import { UpdateVNStateFun } from "../clientState";
 import { CharacterDisplay } from "./characters/CharacterDisplay";
 
 interface DisplayPageProps {

@@ -18,7 +18,12 @@ function ControlsPage({vnState, onUpdate}: ControlPageProps) {
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col">
       <h1 className="text-3xl font-bold mb-6">Controls</h1>
       <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-6">
-        <LocationControl locationOptions={locationOptions} currentLocation={currentLocation} />
+        <LocationControl
+          locationOptions={locationOptions}
+          currentLocation={currentLocation}
+          onLocationChange={(newCurLoc) => onUpdate.updateGamePiece(newCurLoc, 'location', 'currentLocation')}
+          onLocationUpdate={(newLoc) => onUpdate.updateGamePiece(newLoc, 'location', 'locationOptions')}
+        />
         <CharacterControl characters={characters} onChange={(newChar) => onUpdate.updateGamePiece(newChar, 'character', 'characters')}/>
         <ChoiceControl choices={choices} onChoiceChange={(newChoice) => onUpdate.updateGamePiece(newChoice, 'choice', 'currentChoices')} onModeChange={onUpdate.setMode} mode={vnState.currentMode}/>
         <div className="bg-red-200 rounded-lg flex items-center justify-center text-2xl font-semibold border-2 border-red-400">

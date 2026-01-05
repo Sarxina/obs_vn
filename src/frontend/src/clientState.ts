@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { CharacterData, ChoiceData, defaultVNState, GamePiece, GamePieces, LocationData, VNStateData, VNStateField, VNSubject } from "../../common/types"
+import { CharacterData, ChoiceData, defaultVNState, GamePiece, GamePieces, LocationData, VNStateData} from "../../common/types"
 import { Socket, io } from "socket.io-client"
 
 export interface UpdateVNStateFuns {

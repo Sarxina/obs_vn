@@ -1,6 +1,6 @@
 'use client'
 
-import { CharacterData } from "../../../../../common/types"
+import { CharacterData } from "../../../../common/types"
 import { SingleCharacterDisplay } from "./SingleCharacter"
 
 interface CharacterDisplayProps {
