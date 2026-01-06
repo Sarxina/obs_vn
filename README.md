@@ -1,6 +1,40 @@
 # OBS VN
 
-A TypeScript-based visual novel system with separate Express backend and React frontend.
+A visual novel where chat are the characters and make the choices
+
+## tl;dr
+
+0: Install Node.js (v16 or higher) and ensure you can run it from the command line
+1: Copy .env.example to .env and set all the required parameters.
+Azure is not required, but greatly enhances the experience
+2: Run `npm run dev` to install all depencies, build the frontend, and start both servers
+3: Open http://localhost:3000/controls to open the control page
+4: In OBS, you can display the game in one of two ways
+    - Display the entire game by adding a Browser Source pointing to http://localhost:3000/display
+    - Display the front and back of the game separately by adding two Browser Sources
+        - Front: http://localhost:3000/display/front
+        - Back: http://localhost:3000/display/back
+    - This is so you can put your VTuber model or other overlays in between the front and back of the game
+5: Control the game from the control page (http://localhost:3000/controls)
+
+## Controls
+
+### Locations
+Locations are the backgrounds of the visual novel.
+*Location Name* does not effect the game, but helps you keep track
+*Location Image* refers to the image in the `src/frontend/public/locations` folder
+*Active* will switch to this background
+
+### Characters
+
+Characters utilize the `chatgod-js` module
+
+*Name* is the name of the character. Different chatters will control the same character throughout the game
+*Chatter*
+
+### Choices
+
+
 
 ## Project Structure
 
