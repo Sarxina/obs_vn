@@ -1,44 +1,46 @@
 'use client'
 
 import { CharacterData } from "../../../common/types"
+import {RemoveButton, SimpleTextInput } from "./Utils"
 
 interface CharacterControlPanelProps {
     character: CharacterData
-    onChange: (char: CharacterData) => void
+    onCharacteUpdate: (char: CharacterData) => void
+    onRemoveCharacter: (keyword: string) => void
 }
-export const CharacterControlPanel = ({character, onChange}: CharacterControlPanelProps) => {
-
+export const CharacterControlPanel = ({
+    character,
+    onCharacteUpdate,
+    onRemoveCharacter
+}: CharacterControlPanelProps) => {
+    const fields = {
+        Name: 'name',
+        Chatter: 'currentChatter',
+        Image: 'image'
+    }
     return (
-        <div className="flex flex-row">
-            <label>
-                Name:
-                <input
-                    value={character.name}
-                    onChange={e => onChange({...character, name: e.target.value})}
+        <div className="flex flex-wrap gap-3 items-end p-3 bg-white bg-opacity-50 rounded-md">
+            {Object.entries(fields).map(([labelName, objKey]) => (
+                <SimpleTextInput
+                    labelName={labelName}
+                    obj={character}
+                    key={objKey}
+                    objKey={objKey as keyof CharacterData}
+                    onChange={onCharacteUpdate}
                 />
-            </label>
-            <label>
-                Chatter:
-                <input
-                    value={character.currentChatter}
-                    onChange={e => onChange({...character, currentChatter: e.target.value})}
-                />
-            </label>
-            <label>
-                Image:
-                <input
-                    value={character.image}
-                    onChange={e => onChange({...character, image: e.target.value})}
-                />
-            </label>
-            <label>
-                In Scene:
+            ))}
+            <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-gray-700">In Scene</span>
                 <input
                     type="checkbox"
                     checked={character.inScene}
-                    onChange={e => onChange({...character, inScene: e.target.checked})}
+                    onChange={e => onCharacteUpdate({...character, inScene: e.target.checked})}
+                    className="w-5 h-5 rounded"
                 />
             </label>
+            <RemoveButton
+                onClick={() => onRemoveCharacter(character.keyWord)}
+            />
         </div>
     )
 }

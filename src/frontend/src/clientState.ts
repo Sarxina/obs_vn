@@ -6,7 +6,10 @@ import { Socket, io } from "socket.io-client"
 
 export interface UpdateVNStateFuns {
     updateGamePiece: (...args: any[]) => void
+    addGamePiece: (pieceType: GamePiece) => void
+    removeGamePiece: (pieceType: GamePiece, keyWord: string) => void
     setMode: (newMode: 'text' | 'choice') => void
+    setCurrentLoc: (newLoc: string) => void
 }
 
 export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
@@ -60,10 +63,22 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         socket?.emit(`update-${pieceType}`, newPiece);
     }
 
+    const addGamePiece = (
+        pieceType: GamePiece,
+    ) => {
+        socket?.emit(`add-${pieceType}`);
+    };
+
+    const removeGamePiece = (
+        pieceType: GamePiece,
+        keyWord: string
+    ) => {
+        socket?.emit(`remove-${pieceType}`, {keyWord: keyWord})
+    }
+
     const setMode = (
         newMode: 'text' | 'choice'
     ) => {
-        console.log(`We are setting mode to ${newMode}`)
         setVNState({
             ...vnState,
             currentMode: newMode
@@ -71,10 +86,23 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         socket?.emit('set-mode', {mode: newMode});
     }
 
+    const setCurrentLoc = (
+        newLoc: string
+    ) => {
+        setVNState({
+            ...vnState,
+            currentLocation: newLoc
+        });
+        socket?.emit('set-current-location', {keyWord: newLoc});
+    }
+
     // Final object containing all the callbacks to update the VN state
     const updateVNState = {
         updateGamePiece: updateGamePiece,
-        setMode: setMode
+        addGamePiece: addGamePiece,
+        removeGamePiece: removeGamePiece,
+        setMode: setMode,
+        setCurrentLoc: setCurrentLoc
     }
 
     return [vnState, updateVNState];

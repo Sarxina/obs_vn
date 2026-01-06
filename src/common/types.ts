@@ -22,7 +22,7 @@ export interface LocationData {
 }
 
 export interface VNStateData {
-    currentLocation: number;
+    currentLocation: string;
     locationOptions: LocationData[];
     characters: CharacterData[];
     currentSpeaker: string
@@ -50,7 +50,7 @@ const defaultLocation: LocationData = {
 }
 
 export const defaultVNState: VNStateData = {
-    currentLocation: 0,
+    currentLocation: defaultLocation.keyWord,
     locationOptions: [defaultLocation],
     characters: [],
     currentText: 'The adventure begins',

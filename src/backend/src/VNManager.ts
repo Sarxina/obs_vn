@@ -55,6 +55,10 @@ class Choice {
     getkeyWord = () => {
         return this.keyWord;
     }
+
+    setKeyWord = (keyWord: string) => {
+        this.keyWord = keyWord;
+    }
 }
 
 // Custom ChatGod that handles character information
@@ -62,8 +66,18 @@ class Character extends ChatGod {
     private name: string;
     private inScene: boolean
 
-    constructor(keyWord: string, onStateChange: () => void) {
-        super(keyWord, onStateChange)
+    constructor(
+        keyWord: string,
+        onStateChange: () => void,
+        isSpeaking: boolean = false,
+        latestMessage: string = "Added a new character"
+    ) {
+        super(
+            keyWord,
+            onStateChange,
+            isSpeaking,
+            latestMessage
+        )
         this.name = 'Sarxina';
         this.inScene = false;
     }
@@ -111,7 +125,9 @@ class CharacterManager extends ChatGodManager<Character> {
     }
 
     protected createChatGod(keyword: string): Character {
-        return new Character(keyword, this.managerContext.emitVNState.bind(this.managerContext));
+        return new Character(
+            keyword,
+            this.managerContext.emitVNState.bind(this.managerContext));
     }
     serializeChatGods = (): CharacterData[] => {
         return this.chatGods.map(g => g.serialize());
@@ -131,6 +147,21 @@ class CharacterManager extends ChatGodManager<Character> {
     // Override to frontend listener registration to register to VNManager instead
     _registerFrontendListener(wsSubject: string, methodName: string) {
         this.managerContext.wsManager.registerFrontendListener(wsSubject, (this as any)[methodName].bind(this));
+    }
+
+    // Directly set all the chracters in the manager from loaded data
+    _setCharacters(characters: CharacterData[]) {
+        const newChatGods: Character[] = [];
+        for (const character of characters) {
+            const newCharacter = new Character(
+                character.keyWord,
+                this.managerContext.emitVNState.bind(this.managerContext),
+                character.isSpeaking,
+                character.latestMessage
+            )
+            newChatGods.push(newCharacter)
+        }
+        this.chatGods = newChatGods;
     }
 
     constructor (
@@ -194,7 +225,7 @@ class Location {
 
 // Manages the game's full state
 class VNState {
-    private currentLocation: number;     // The index of which location we're at
+    private currentLocation: string;     // The keyword for the location we're at
     private locationOptions: Location[];
     private characters: CharacterManager
     private currentText: string;
@@ -211,7 +242,7 @@ class VNState {
         onStateChange: () => void
     ) {
         this.locationOptions = [new Location()];
-        this.currentLocation = 0;
+        this.currentLocation = this.locationOptions[0].keyWord;
         this.characters = new CharacterManager(server, managerContext);
         this.currentSpeaker = this.characters.chatGods[0].getName();
         this.currentText = 'The story begins...'
@@ -250,8 +281,9 @@ class VNState {
     // Remove spesific location from options
     // Update
     @updateVNState
-    removeLocation(idx: number) {
-        this.locationOptions.splice(idx, 1);
+    removeLocation(keyWord: string) {
+        console.log(this.locationOptions.filter(loc => loc.keyWord !== keyWord))
+        this.locationOptions = this.locationOptions.filter(loc => loc.keyWord !== keyWord)
     }
 
     @updateVNState
@@ -263,11 +295,12 @@ class VNState {
     }
 
     @updateVNState
-    setCurrentLocation(idx: number) {
-        if (idx >= this.locationOptions.length) {
+    setCurrentLocation(keyword: string) {
+        const locToSet = this.locationOptions.find(loc => loc.keyWord === keyword)
+        if (!locToSet) {
             throw new Error('Tried to set non-existance location')
         }
-        this.currentLocation = idx;
+        this.currentLocation = locToSet.keyWord;
     }
 
     /** Character CRUD */
@@ -283,8 +316,8 @@ class VNState {
     }
 
     @updateVNState
-    deleteCharacter(idx: number) {
-        this.characters.deleteChatGod(idx);
+    deleteCharacter(keyWord: string) {
+        this.characters.deleteChatGod({keyWord: keyWord});
     }
 
     /** Text CRUD */
@@ -322,8 +355,11 @@ class VNState {
     }
 
     @updateVNState
-    deleteChoice(idx: number) {
-        this.currentChoices.splice(idx, 1);
+    deleteChoice(keyWord: string) {
+        this.currentChoices = this.currentChoices.filter(choice => choice.getkeyWord() !== keyWord)
+        // The keyword of choices is set based on index so we need to reset the indices on a deletion
+
+        this.currentChoices.forEach((choice, idx) => choice.setKeyWord(`!voteChoice${idx + 1}`));
     }
 
     //** Mode CRUD */
@@ -346,16 +382,43 @@ class VNState {
         this.locationOptions = newLocations;
     }
 
+    // Directly set all of the characters
+    _setCharacters(characters: CharacterData[]) {
+        this.characters._setCharacters(characters);
+    }
+
+    _setChoices(choices: ChoiceData[]) {
+        const newChoices: Choice[] = [];
+        for (const choice of choices) {
+            const newChoice = new Choice(
+                choice.text,
+                choice.keyWord,
+                this.onStateChange
+            )
+            newChoices.push(newChoice);
+        }
+        this.currentChoices = newChoices;
+    }
+
     // Directly set the entire state
     @updateGodState
     setState(state: VNStateData) {
         // Location
+        this._setLocations(state.locationOptions)
+        this.currentLocation = state.currentLocation;
 
         // Characters
+        this._setCharacters(state.characters);
+        this.currentSpeaker = state.currentText;
 
         // Choices
+        this._setChoices(state.currentChoices)
 
         // Mode
+        this.setMode(state.currentMode);
+
+        // text
+        this.currentText = state.currentText;
     }
 
 }
@@ -387,7 +450,8 @@ export class VNManager {
 
     @updateFromFrontend('remove-location')
     removeLocation = (data: any) => {
-        this.state.removeLocation(data.idx);
+        console.log(data)
+        this.state.removeLocation(data.keyWord);
     };
 
     @updateFromFrontend('update-location')
@@ -397,7 +461,7 @@ export class VNManager {
 
     @updateFromFrontend('set-current-location')
     setCurrentLocation = (data: any) => {
-        this.state.setCurrentLocation(data.idx);
+        this.state.setCurrentLocation(data.keyWord);
     }
 
     // Characters
@@ -411,9 +475,9 @@ export class VNManager {
         this.state.updateCharacter(data);
     };
 
-    @updateFromFrontend('delete-character')
+    @updateFromFrontend('remove-character')
     deleteCharacter = (data: any) => {
-        this.state.deleteCharacter(data.idx);
+        this.state.deleteCharacter(data.keyWord);
     };
 
     // Text
@@ -445,9 +509,9 @@ export class VNManager {
         this.state.updateChoice(data);
     };
 
-    @updateFromFrontend('delete-choice')
+    @updateFromFrontend('remove-choice')
     deleteChoice = (data: any) => {
-        this.state.deleteChoice(data.idx);
+        this.state.deleteChoice(data.keyWord);
     };
 
     // Mode
@@ -472,7 +536,6 @@ export class VNManager {
             choiceToVote.voteForChoice();
         }
     }
-
 
     constructor(server: http.Server) {
         console.log("Attempting to start the VNManager");

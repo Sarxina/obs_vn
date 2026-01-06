@@ -1,4 +1,4 @@
-import { VNStateData } from "../../../common/types"
+import { VNStateData, type LocationData } from "../../../common/types"
 import { UpdateVNStateFuns } from "../clientState";
 import { CharacterControl } from "./CharacterControl"
 import { ChoiceControl } from "./ChoiceControl";
@@ -19,15 +19,28 @@ function ControlsPage({vnState, onUpdate}: ControlPageProps) {
       <h1 className="text-3xl font-bold mb-6">Controls</h1>
       <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-6">
         <LocationControl
-          locationOptions={locationOptions}
-          currentLocation={currentLocation}
-          onLocationChange={(newCurLoc) => onUpdate.updateGamePiece(newCurLoc, 'location', 'currentLocation')}
-          onLocationUpdate={(newLoc) => onUpdate.updateGamePiece(newLoc, 'location', 'locationOptions')}
+          locOptions={locationOptions}
+          currentLoc={currentLocation}
+          onLocSelection={(locSelection: string) => onUpdate.setCurrentLoc(locSelection)}
+          onLocUpdate={(newLoc: LocationData) => onUpdate.updateGamePiece(newLoc, 'location', 'locationOptions')}
+          onLocAdd={() => onUpdate.addGamePiece('location')}
+          onLocRemove={(keyWord: string) => onUpdate.removeGamePiece('location', keyWord)}
         />
-        <CharacterControl characters={characters} onChange={(newChar) => onUpdate.updateGamePiece(newChar, 'character', 'characters')}/>
-        <ChoiceControl choices={choices} onChoiceChange={(newChoice) => onUpdate.updateGamePiece(newChoice, 'choice', 'currentChoices')} onModeChange={onUpdate.setMode} mode={vnState.currentMode}/>
-        <div className="bg-red-200 rounded-lg flex items-center justify-center text-2xl font-semibold border-2 border-red-400">
-          General Controls
+        <CharacterControl
+          characters={characters}
+          onCharacteUpdate={(newChar) => onUpdate.updateGamePiece(newChar, 'character', 'characters')}
+          onAddCharacter={() => onUpdate.addGamePiece('character')}
+          onRemoveCharacter={(keyWord: string) => onUpdate.removeGamePiece('character', keyWord)}
+        />
+        <ChoiceControl
+          choices={choices}
+          onChoiceUpdate={(newChoice) => onUpdate.updateGamePiece(newChoice, 'choice', 'currentChoices')}
+          onAddChoice={() => onUpdate.addGamePiece('choice')}
+          onRemoveChoice={(keyWord: string) => onUpdate.removeGamePiece('choice', keyWord)}
+          onModeChange={onUpdate.setMode} mode={vnState.currentMode}
+        />
+        <div className="bg-red-50 rounded-lg flex items-center justify-center text-lg font-semibold border-2 border-red-300 shadow-sm">
+          <span className="text-red-900">General Controls</span>
         </div>
       </div>
     </div>
