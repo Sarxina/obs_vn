@@ -10,17 +10,14 @@ interface DisplayPageProps {
 
 const BehindModel = ({vnState}: DisplayPageProps) => {
 
-    const currentLocation = vnState.locationOptions[vnState.currentLocation];
+    const currentLocation = vnState.locationOptions.find(l => l.keyWord === vnState.currentLocation);
     const characters = vnState.characters;
 
     return (
-        <main
-            className="relative w-[1920px] h-[1080px] overflow-hidden"
-            style={{ width: '1920px', height: '1080px' }}
-        >
-            <SceneDisplay bgImage={currentLocation.image}/>
+        <div className="absolute inset-0">
+            <SceneDisplay bgImage={currentLocation?.image}/>
             <CharacterDisplay characters={characters}/>
-        </main>
+        </div>
     );
 }
 

@@ -1,9 +1,9 @@
 import { ChatGod, ChatGodManager, updateFromFrontend, updateGodState } from "./chatgod-js/src/services/ChatGodManager"
-import { AZURE_VOICES, AZURE_VOICE_STYLES } from "./chatgod-js/src/common/types"
 import { WSManager } from "./chatgod-js/src/services/WSManager";
 import http from "http";
 import { WSManagerVN } from "./WSManagerVN";
 import { CharacterData, ChoiceData, LocationData, VNMode, VNStateData } from "../../common/types";
+import { randomVoiceStyle } from "./chatgod-js/src/common/util";
 
 // Decorator to put on any function that should trigger an update of the VN state
 function updateVNState(_target: any, _propertyKey: any, descriptor: PropertyDescriptor) {
@@ -130,8 +130,7 @@ class CharacterManager extends ChatGodManager<Character> {
             keyword,
             this.managerContext.emitVNState.bind(this.managerContext));
         character.onChatterChange = (newChatter: string) => {
-            const voice = AZURE_VOICES[Math.floor(Math.random() * AZURE_VOICES.length)]!;
-            const style = AZURE_VOICE_STYLES[Math.floor(Math.random() * AZURE_VOICE_STYLES.length)]!;
+            const [voice, style] = randomVoiceStyle();
             character.setTTSSettings(voice, style);
             this.twitchChatManager.say(`${newChatter} is now in control of ${character.getName()}!`);
         };
@@ -219,7 +218,7 @@ class Location {
     constructor (
         name: string = 'classroom',
         image: string = 'defaultClassroom.jpg',
-        keyword: string = `!location${Math.floor(Math.random() * 100)}`
+        keyword: string = `!location${Date.now()}${Math.floor(Math.random() * 1000)}`
     ) {
         this.name = name;
         this.image = image;
@@ -430,7 +429,7 @@ class VNState {
 
         // Characters
         this._setCharacters(state.characters);
-        this.currentSpeaker = state.currentText;
+        this.currentSpeaker = state.currentSpeaker;
 
         // Choices
         this._setChoices(state.currentChoices)

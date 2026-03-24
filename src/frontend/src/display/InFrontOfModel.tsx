@@ -14,10 +14,7 @@ const InFrontOfModel = ({vnState}: DisplayPageProps) => {
     const currentSpeaker = vnState.currentSpeaker;
 
     return (
-        <main
-            className="relative w-[1920px] h-[1080px] overflow-hidden"
-            style={{ width: '1920px', height: '1080px' }}
-        >
+        <div className="absolute inset-0">
             {currentMode === 'choice' && (
                 <div className="absolute inset-0">
                     <ChoiceDisplay choices={currentChoices}/>
@@ -27,7 +24,7 @@ const InFrontOfModel = ({vnState}: DisplayPageProps) => {
             {currentMode === 'text' && (
                 <DialogueDisplay text={currentText} speaker={currentSpeaker}/>
             )}
-        </main>
+        </div>
     );
 }
 
