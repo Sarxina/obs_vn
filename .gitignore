@@ -41,3 +41,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# character and location images (keep folders, keep defaults)
+src/frontend/public/characters/*
+!src/frontend/public/characters/.gitkeep
+!src/frontend/public/characters/SarxinaFront.png
+src/frontend/public/locations/*
+!src/frontend/public/locations/.gitkeep
+!src/frontend/public/locations/defaultClassroom.jpg
