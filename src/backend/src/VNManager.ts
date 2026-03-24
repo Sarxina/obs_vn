@@ -125,9 +125,16 @@ class CharacterManager extends ChatGodManager<Character> {
     }
 
     protected createChatGod(keyword: string): Character {
-        return new Character(
+        const character = new Character(
             keyword,
             this.managerContext.emitVNState.bind(this.managerContext));
+        character.onChatterChange = (newChatter: string) => {
+            this.twitchChatManager.say(`${newChatter} is now in control of ${character.getName()}!`);
+        };
+        character.onQueueJoin = (chatter: string) => {
+            this.twitchChatManager.say(`${chatter} has joined the queue for ${character.getName()}!`);
+        };
+        return character;
     }
     serializeChatGods = (): CharacterData[] => {
         return this.chatGods.map(g => g.serialize());
@@ -151,17 +158,11 @@ class CharacterManager extends ChatGodManager<Character> {
 
     // Directly set all the chracters in the manager from loaded data
     _setCharacters(characters: CharacterData[]) {
-        const newChatGods: Character[] = [];
-        for (const character of characters) {
-            const newCharacter = new Character(
-                character.keyWord,
-                this.managerContext.emitVNState.bind(this.managerContext),
-                character.isSpeaking,
-                character.latestMessage
-            )
-            newChatGods.push(newCharacter)
-        }
-        this.chatGods = newChatGods;
+        this.chatGods = characters.map(character => {
+            const newCharacter = this.createChatGod(character.keyWord);
+            newCharacter.update(character);
+            return newCharacter;
+        });
     }
 
     constructor (
@@ -188,6 +189,14 @@ class CharacterManager extends ChatGodManager<Character> {
     // After processing chat gods messagines
     // Check to see if message qualifies as a choice vote
     processMessage (message: string, chatter: string) {
+        if (message.trim() === '!howtojoin') {
+            const state = this.managerContext.state.serialize();
+            const charLines = this.chatGods.map(c => `${c.getName()} - ${c.keyWord}`).join(' | ');
+            const choiceLines = state.currentChoices.map(c => `${c.text}: ${c.keyWord}`).join(' | ');
+            let msg = `Type !join<code> to queue for a character! Characters: ${charLines} | When choices appear, type the command to vote! Choices: ${choiceLines}`;
+            this.twitchChatManager.say(msg);
+            return;
+        }
         this.managerContext.voteByKeyword(message);
         super.processMessage(message, chatter);
     }
