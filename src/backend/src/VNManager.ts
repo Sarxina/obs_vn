@@ -190,10 +190,8 @@ class CharacterManager extends ChatGodManager<Character> {
         }
     }
     sendHowToJoin() {
-        const state = this.managerContext.state.serialize();
         const charLines = this.chatGods.map(c => `${c.getName()} - ${c.keyWord}`).join(' | ');
-        const choiceLines = state.currentChoices.map(c => `${c.text}: ${c.keyWord}`).join(' | ');
-        const msg = `Type !join<code> to queue for a character! Characters: ${charLines} | When choices appear, type the command to vote! Choices: ${choiceLines}`;
+        const msg = `Type !join<code> to queue for a character! Characters: ${charLines} | When choices appear on screen, type the command shown to vote!`;
         this.twitchChatManager.say(msg);
     }
 

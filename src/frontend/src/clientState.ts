@@ -12,6 +12,7 @@ export interface UpdateVNStateFuns {
     setCurrentLoc: (newLoc: string) => void
     loadState: (state: VNStateData) => void
     advanceQueue: (keyWord: string) => void
+    removeFromQueue: (keyWord: string) => void
     sendHowToJoin: () => void
 }
 
@@ -110,6 +111,10 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         socket?.emit('advance-queue', { keyWord });
     }
 
+    const removeFromQueue = (keyWord: string) => {
+        socket?.emit('remove-from-queue', { keyWord });
+    }
+
     const sendHowToJoin = () => {
         socket?.emit('how-to-join');
     }
@@ -123,6 +128,7 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         setCurrentLoc: setCurrentLoc,
         loadState: loadState,
         advanceQueue: advanceQueue,
+        removeFromQueue: removeFromQueue,
         sendHowToJoin: sendHowToJoin
     }
 

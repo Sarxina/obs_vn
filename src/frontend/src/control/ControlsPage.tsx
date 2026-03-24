@@ -33,6 +33,7 @@ function ControlsPage({vnState, onUpdate}: ControlPageProps) {
           onAddCharacter={() => onUpdate.addGamePiece('character')}
           onRemoveCharacter={(keyWord: string) => onUpdate.removeGamePiece('character', keyWord)}
           onAdvanceQueue={onUpdate.advanceQueue}
+          onRemoveFromQueue={onUpdate.removeFromQueue}
         />
         <ChoiceControl
           choices={choices}

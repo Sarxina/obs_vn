@@ -11,6 +11,7 @@ interface CharacterControlProps {
     onAddCharacter: () => void
     onRemoveCharacter: (keyword: string) => void
     onAdvanceQueue: (keyWord: string) => void
+    onRemoveFromQueue: (keyWord: string) => void
 };
 
 // Full quandrant for controlling the characters (and associated chatters)
@@ -19,7 +20,8 @@ export const CharacterControl = ({
     onCharacteUpdate,
     onAddCharacter,
     onRemoveCharacter,
-    onAdvanceQueue
+    onAdvanceQueue,
+    onRemoveFromQueue
 } : CharacterControlProps) => {
     return (
         <div className="bg-green-50 rounded-lg flex flex-col gap-3 p-4 border-2 border-green-300 shadow-sm">
@@ -32,6 +34,7 @@ export const CharacterControl = ({
                         onCharacteUpdate={onCharacteUpdate}
                         onRemoveCharacter={onRemoveCharacter}
                         onAdvanceQueue={onAdvanceQueue}
+                        onRemoveFromQueue={onRemoveFromQueue}
                     />
                 ))}
             </div>
