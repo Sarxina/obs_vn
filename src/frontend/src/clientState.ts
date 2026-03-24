@@ -12,6 +12,7 @@ export interface UpdateVNStateFuns {
     setCurrentLoc: (newLoc: string) => void
     loadState: (state: VNStateData) => void
     advanceQueue: (keyWord: string) => void
+    sendHowToJoin: () => void
 }
 
 export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
@@ -109,6 +110,10 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         socket?.emit('advance-queue', { keyWord });
     }
 
+    const sendHowToJoin = () => {
+        socket?.emit('how-to-join');
+    }
+
     // Final object containing all the callbacks to update the VN state
     const updateVNState = {
         updateGamePiece: updateGamePiece,
@@ -117,7 +122,8 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
         setMode: setMode,
         setCurrentLoc: setCurrentLoc,
         loadState: loadState,
-        advanceQueue: advanceQueue
+        advanceQueue: advanceQueue,
+        sendHowToJoin: sendHowToJoin
     }
 
     return [vnState, updateVNState];

@@ -6,9 +6,10 @@ import { VNStateData } from "../../../common/types"
 interface GeneralControlProps {
     vnState: VNStateData
     onLoadState: (state: VNStateData) => void
+    onHowToJoin: () => void
 }
 
-export const GeneralControl = ({ vnState, onLoadState }: GeneralControlProps) => {
+export const GeneralControl = ({ vnState, onLoadState, onHowToJoin }: GeneralControlProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleSave = () => {
@@ -57,6 +58,12 @@ export const GeneralControl = ({ vnState, onLoadState }: GeneralControlProps) =>
                     className="hidden"
                     onChange={handleLoad}
                 />
+                <button
+                    onClick={onHowToJoin}
+                    className="px-4 py-2 bg-red-400 text-white font-semibold rounded-md hover:opacity-80 transition-colors"
+                >
+                    Post How To Join
+                </button>
             </div>
         </div>
     )

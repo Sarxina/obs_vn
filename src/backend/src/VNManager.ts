@@ -186,15 +186,19 @@ class CharacterManager extends ChatGodManager<Character> {
             super.speakMessage(chatGod, message);
         }
     }
+    sendHowToJoin() {
+        const state = this.managerContext.state.serialize();
+        const charLines = this.chatGods.map(c => `${c.getName()} - ${c.keyWord}`).join(' | ');
+        const choiceLines = state.currentChoices.map(c => `${c.text}: ${c.keyWord}`).join(' | ');
+        const msg = `Type !join<code> to queue for a character! Characters: ${charLines} | When choices appear, type the command to vote! Choices: ${choiceLines}`;
+        this.twitchChatManager.say(msg);
+    }
+
     // After processing chat gods messagines
     // Check to see if message qualifies as a choice vote
     processMessage (message: string, chatter: string) {
         if (message.trim() === '!howtojoin') {
-            const state = this.managerContext.state.serialize();
-            const charLines = this.chatGods.map(c => `${c.getName()} - ${c.keyWord}`).join(' | ');
-            const choiceLines = state.currentChoices.map(c => `${c.text}: ${c.keyWord}`).join(' | ');
-            let msg = `Type !join<code> to queue for a character! Characters: ${charLines} | When choices appear, type the command to vote! Choices: ${choiceLines}`;
-            this.twitchChatManager.say(msg);
+            this.sendHowToJoin();
             return;
         }
         this.managerContext.voteByKeyword(message);
@@ -396,6 +400,10 @@ class VNState {
         this.characters._setCharacters(characters);
     }
 
+    sendHowToJoin() {
+        this.characters.sendHowToJoin();
+    }
+
     _setChoices(choices: ChoiceData[]) {
         const newChoices: Choice[] = [];
         for (const choice of choices) {
@@ -527,6 +535,11 @@ export class VNManager {
     @updateFromFrontend('set-mode')
     setMode = (data: any) => {
         this.state.setMode(data.mode);
+    }
+
+    @updateFromFrontend('how-to-join')
+    howToJoin = (_data: any) => {
+        this.state.sendHowToJoin();
     }
 
     @updateFromFrontend('load-state')

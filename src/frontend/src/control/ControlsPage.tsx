@@ -44,6 +44,7 @@ function ControlsPage({vnState, onUpdate}: ControlPageProps) {
         <GeneralControl
           vnState={vnState}
           onLoadState={onUpdate.loadState}
+          onHowToJoin={onUpdate.sendHowToJoin}
         />
       </div>
     </div>
