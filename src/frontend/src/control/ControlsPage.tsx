@@ -3,6 +3,7 @@ import { UpdateVNStateFuns } from "../clientState";
 import { CharacterControl } from "./CharacterControl"
 import { ChoiceControl } from "./ChoiceControl";
 import { LocationControl } from "./LocationControl";
+import { GeneralControl } from "./GeneralControl";
 
 interface ControlPageProps {
   vnState: VNStateData
@@ -39,9 +40,10 @@ function ControlsPage({vnState, onUpdate}: ControlPageProps) {
           onRemoveChoice={(keyWord: string) => onUpdate.removeGamePiece('choice', keyWord)}
           onModeChange={onUpdate.setMode} mode={vnState.currentMode}
         />
-        <div className="bg-red-50 rounded-lg flex items-center justify-center text-lg font-semibold border-2 border-red-300 shadow-sm">
-          <span className="text-red-900">General Controls</span>
-        </div>
+        <GeneralControl
+          vnState={vnState}
+          onLoadState={onUpdate.loadState}
+        />
       </div>
     </div>
   )

@@ -13,7 +13,7 @@ export const ChoiceDisplay = ({ choices }: ChoiceDisplayProps) => {
             className="
                 flex flex-col
                 justify-evenly
-                min-h-screen
+                h-full
                 px-24
                 w-full
             "
