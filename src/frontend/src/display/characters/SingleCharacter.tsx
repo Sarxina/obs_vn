@@ -9,11 +9,11 @@ export interface SingleCharacterDisplayProps {
 
 export function SingleCharacterDisplay({ image, name, isSpeaking }: SingleCharacterDisplayProps) {
   return (
-    <div className='h-full flex items-end'>
+    <div className='flex items-end'>
       <motion.img
         src={`characters/${image}`}
         alt={name}
-        className='object-bottom'
+        className='h-[800px] w-auto'
         animate={isSpeaking ? "speaking" : "idle"}
         variants={{
           idle: {

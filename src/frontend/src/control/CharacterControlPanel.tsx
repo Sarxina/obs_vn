@@ -7,11 +7,13 @@ interface CharacterControlPanelProps {
     character: CharacterData
     onCharacteUpdate: (char: CharacterData) => void
     onRemoveCharacter: (keyword: string) => void
+    onAdvanceQueue: (keyWord: string) => void
 }
 export const CharacterControlPanel = ({
     character,
     onCharacteUpdate,
-    onRemoveCharacter
+    onRemoveCharacter,
+    onAdvanceQueue
 }: CharacterControlPanelProps) => {
     const fields = {
         Name: 'name',
@@ -38,6 +40,18 @@ export const CharacterControlPanel = ({
                     className="w-5 h-5 rounded"
                 />
             </label>
+            <div className="flex flex-col gap-1 pb-2">
+                <span className="text-sm font-medium text-gray-700">Queue</span>
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold">{character.queueSize ?? 0}</span>
+                    <button
+                        onClick={() => onAdvanceQueue(character.keyWord)}
+                        className="px-2 py-1 text-xs font-semibold bg-green-600 text-white rounded-md hover:opacity-80 transition-colors"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
             <RemoveButton
                 onClick={() => onRemoveCharacter(character.keyWord)}
             />
