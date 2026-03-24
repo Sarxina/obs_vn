@@ -1,4 +1,5 @@
 import { ChatGod, ChatGodManager, updateFromFrontend, updateGodState } from "./chatgod-js/src/services/ChatGodManager"
+import { AZURE_VOICES, AZURE_VOICE_STYLES } from "./chatgod-js/src/common/types"
 import { WSManager } from "./chatgod-js/src/services/WSManager";
 import http from "http";
 import { WSManagerVN } from "./WSManagerVN";
@@ -129,6 +130,9 @@ class CharacterManager extends ChatGodManager<Character> {
             keyword,
             this.managerContext.emitVNState.bind(this.managerContext));
         character.onChatterChange = (newChatter: string) => {
+            const voice = AZURE_VOICES[Math.floor(Math.random() * AZURE_VOICES.length)]!;
+            const style = AZURE_VOICE_STYLES[Math.floor(Math.random() * AZURE_VOICE_STYLES.length)]!;
+            character.setTTSSettings(voice, style);
             this.twitchChatManager.say(`${newChatter} is now in control of ${character.getName()}!`);
         };
         character.onQueueJoin = (chatter: string) => {
