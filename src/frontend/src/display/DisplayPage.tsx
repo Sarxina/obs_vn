@@ -12,7 +12,7 @@ interface DisplayPageProps {
 
 const DisplayPage = ({vnState}: DisplayPageProps) => {
 
-    const currentLocation = vnState.locationOptions[vnState.currentLocation];
+    const currentLocation = vnState.locationOptions.find(l => l.keyWord === vnState.currentLocation);
     const characters = vnState.characters;
     const currentText = vnState.currentText;
     const currentChoices = vnState.currentChoices;
@@ -24,7 +24,7 @@ const DisplayPage = ({vnState}: DisplayPageProps) => {
             className="relative w-[1920px] h-[1080px] overflow-hidden"
             style={{ width: '1920px', height: '1080px' }}
         >
-            <SceneDisplay bgImage={currentLocation.image}/>
+            <SceneDisplay bgImage={currentLocation?.image}/>
             <CharacterDisplay characters={characters}/>
 
             {currentMode === 'choice' && (

@@ -17,8 +17,11 @@ export const useVNState = (): [VNStateData, UpdateVNStateFuns] => {
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        // In dev: connects to backend on 5001. In prod: connects to same origin
-        const newSocket = io(window.location.origin.includes('3000') ? 'http://localhost:5001' : window.location.origin);
+        // In dev: connects to backend on 5001 (same host, different port). In prod: connects to same origin
+        const backendUrl = window.location.port === '3000'
+            ? `${window.location.protocol}//${window.location.hostname}:5001`
+            : window.location.origin;
+        const newSocket = io(backendUrl);
         setSocket(newSocket);
 
         return () => {

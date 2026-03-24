@@ -2,14 +2,14 @@
 'use client';
 
 interface SceneDisplayProps {
-  bgImage: string;
+  bgImage: string | undefined;
 }
 
 export function SceneDisplay({ bgImage }: SceneDisplayProps) {
   return (
     <div
       className="absolute inset-0 bg-cover bg-center"
-      style={{ backgroundImage: `url(locations/${bgImage})` }}
+      style={{ backgroundImage: bgImage ? `url(locations/${bgImage})` : undefined }}
     />
   );
 }
