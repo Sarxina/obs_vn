@@ -1,4 +1,5 @@
 export interface DialogueDisplayProps {
     text: string,
-    speaker: string
+    speaker: string,
+    chatter?: string
 }

@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs'
 
 // Load .env from project root
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
@@ -20,6 +21,16 @@ console.log('Starting Server')
 app.use(express.static(path.join(__dirname, '../../../dist/frontend')))
 app.get('*', (req, res) => {
   res.sendFile('index.html', { root: path.join(__dirname, '../../../dist/frontend') })
+})
+
+// get endpoint for getting the list of available location and character files
+app.get('/locationFiles', (req, res) => {
+  const files = fs.readdirSync(path.join(__dirname, '../../frontend/public/locations'));
+  res.json(files)
+})
+app.get('/characterFiles', (req, res) => {
+  const files = fs.readdirSync(path.join(__dirname, '../../frontend/public/characters'));
+  res.json(files)
 })
 
 // Backend process start

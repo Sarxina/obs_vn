@@ -12,6 +12,7 @@ const InFrontOfModel = ({vnState}: DisplayPageProps) => {
     const currentChoices = vnState.currentChoices;
     const currentMode = vnState.currentMode;
     const currentSpeaker = vnState.currentSpeaker;
+    const currentChatter = vnState.characters.find(c => c.name === currentSpeaker)?.currentChatter;
 
     return (
         <div className="absolute inset-0">
@@ -22,7 +23,7 @@ const InFrontOfModel = ({vnState}: DisplayPageProps) => {
             )}
 
             {currentMode === 'text' && (
-                <DialogueDisplay text={currentText} speaker={currentSpeaker}/>
+                <DialogueDisplay text={currentText} speaker={currentSpeaker} chatter={currentChatter}/>
             )}
         </div>
     );

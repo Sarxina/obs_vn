@@ -1,6 +1,8 @@
 import { ChatGod, ChatGodManager, updateFromFrontend, updateGodState } from "./chatgod-js/src/services/ChatGodManager"
 import { WSManager } from "./chatgod-js/src/services/WSManager";
 import http from "http";
+import fs from 'fs';
+import path from 'path'
 import { WSManagerVN } from "./WSManagerVN";
 import { CharacterData, ChoiceData, LocationData, VNMode, VNStateData } from "../../common/types";
 import { randomVoiceStyle } from "./chatgod-js/src/common/util";
@@ -51,6 +53,10 @@ class Choice {
     @updateVNState
     voteForChoice() {
         this.numVotes += 1;
+    }
+
+    resetVotes() {
+        this.numVotes = 0;
     }
 
     getkeyWord = () => {
@@ -380,6 +386,7 @@ class VNState {
     @updateVNState
     setMode(mode: VNMode) {
         this.currentMode = mode;
+        this.currentChoices.forEach(choice => choice.resetVotes());
     }
 
     // Directly set all of the locations
@@ -448,7 +455,7 @@ export class VNManager {
 
     emitVNState () {
         this.wsManager.emitVNState(this.state.serialize());
-    };
+    }; 
 
     getLocationByKeyword = (keyWord: string) => {
         return this.state.getAllLocations().find(loc => loc.keyWord);

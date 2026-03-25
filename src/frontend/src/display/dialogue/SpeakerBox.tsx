@@ -1,15 +1,15 @@
 'use client';
 
-export function SpeakerBox({speaker}: {speaker: string}) {
+export function SpeakerBox({speaker, chatter}: {speaker: string, chatter?: string}) {
   return (
     <div
       className="
         bg-orange-500/80
         text-white
         font-bold
-        text-lg
-        px-4
-        py-2
+        text-xl
+        px-5
+        py-3
         inline-block
         shadow-lg
         border-2
@@ -18,6 +18,9 @@ export function SpeakerBox({speaker}: {speaker: string}) {
       "
     >
       {speaker}
+      {chatter && (
+        <div className="text-sm font-normal opacity-80">({chatter})</div>
+      )}
     </div>
   );
 }
