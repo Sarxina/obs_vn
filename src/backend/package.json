@@ -9,7 +9,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@sarxina/chatgod-js": "file:../../../Random-VTuber-Toys/utils/chatgod-js",
+    "@sarxina/chatgod-js": "^0.1.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.1"
