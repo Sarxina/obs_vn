@@ -59,20 +59,16 @@ You need an Azure account with billing set up. Don't worry — I've been using t
 
 ## Setup
 
-**Don't download the repo as a zip.** It won't include my other program [chatgod-js](https://github.com/Sarxina/chatgod-js), which is required for this to work. You have to clone it with Git.
-
 ### 1. Download the Project
 
-You need [Git](https://git-scm.com/downloads) installed. Open a terminal and run:
+Clone the repo (or download it as a zip — either works now):
 
 ```
 git clone https://github.com/Sarxina/obs_vn.git
 cd obs_vn
-git submodule init
-git submodule update
 ```
 
-The last two commands pull in the `chatgod-js` module that OBS VN depends on. Don't skip them or the project won't build.
+OBS VN depends on [chatgod-js](https://github.com/Sarxina/chatgod-js), but you don't need to do anything special — it's installed automatically from npm when you run the project.
 
 ### 2. Add Your Images
 
