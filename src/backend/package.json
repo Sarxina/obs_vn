@@ -2,12 +2,14 @@
   "name": "obs-vn-backend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@sarxina/chatgod-js": "file:../../../Random-VTuber-Toys/utils/chatgod-js",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.1"
