@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # @sarxina/chatgod-js transitively pulls in `speaker`, a native ALSA
+      # binding that needs ALSA dev headers to build on Linux.
+      - name: Install ALSA dev headers
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
