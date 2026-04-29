@@ -44,5 +44,14 @@ export default defineConfig({
         include: ["src/**/*.test.ts"],
         exclude: ["**/node_modules/**"],
         environment: "node",
+        // Force chatgod-js through the Vite transform pipeline so the
+        // resolve aliases above intercept its `import "speaker"` etc. By
+        // default Vite externalizes deps in node_modules and Node resolves
+        // their imports natively, bypassing the alias map.
+        server: {
+            deps: {
+                inline: ["@sarxina/chatgod-js"],
+            },
+        },
     },
 });
