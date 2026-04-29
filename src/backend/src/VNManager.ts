@@ -161,12 +161,12 @@ class CharacterManager extends ChatGodManager<Character> {
         character.onChatterChange = (newChatter: string): void => {
             const [voice, style] = randomVoiceStyle();
             character.setTTSSettings(voice, style);
-            this.twitchChatManager.say(
+            this.twitchManager.say(
                 `${newChatter} is now in control of ${character.getName()}!`
             );
         };
         character.onQueueJoin = (chatter: string): void => {
-            this.twitchChatManager.say(
+            this.twitchManager.say(
                 `${chatter} has joined the queue for ${character.getName()}!`
             );
         };
@@ -219,7 +219,7 @@ class CharacterManager extends ChatGodManager<Character> {
     sendHowToJoin(): void {
         const charLines = this.chatGods.map((c) => `${c.getName()} - ${c.keyWord}`).join(" | ");
         const msg = `Type !join<code> to queue for a character! Characters: ${charLines} | When choices appear on screen, type the command shown to vote!`;
-        this.twitchChatManager.say(msg);
+        this.twitchManager.say(msg);
     }
 
     // After processing chat gods messages
