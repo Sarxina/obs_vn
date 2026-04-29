@@ -36,7 +36,7 @@ interface FrontendBinding {
 
 // --- Choice ---
 
-class Choice {
+export class Choice {
     private text: string;
     private keyWord: string;
     private numVotes: number;
@@ -82,7 +82,7 @@ class Choice {
 // --- Character ---
 
 // Custom ChatGod that handles character information
-class Character extends ChatGod {
+export class Character extends ChatGod {
     private name: string;
     private inScene: boolean;
 
@@ -237,7 +237,7 @@ class CharacterManager extends ChatGodManager<Character> {
 // --- Location ---
 
 // Manages the game's current location
-class Location {
+export class Location {
     private name: string;
     private image: string;
     keyWord: string;
