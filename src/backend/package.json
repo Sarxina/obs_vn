@@ -1,6 +1,6 @@
 {
   "name": "obs-vn-backend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@sarxina/chatgod-js": "^0.1.8",
+    "@sarxina/chatgod-js": "^0.1.10",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.1"
@@ -20,6 +20,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.9.3",
+    "socket.io-client": "^4.8.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "unplugin-swc": "^1.5.9",
