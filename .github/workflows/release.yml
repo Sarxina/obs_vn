@@ -1,0 +1,20 @@
+name: Release
+
+# obs_vn isn't published as an npm package — this just tags the merge
+# commit when the version in src/backend/package.json advances. Gives a
+# clean release history for downloadable builds.
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    uses: Sarxina/sarxina-tools/.github/workflows/release.yml@main
+    permissions:
+      contents: write
+    with:
+      working_directory: src/backend
+      npm_publish: false
+      apt_packages: libasound2-dev   # speaker native (chatgod-js transitive)
+      build_command: npm run build
+      test_command: npm test
